@@ -31,9 +31,9 @@ if ( ! defined( 'WCBOOST_WISHLIST_FILE' ) ) {
 	define( 'WCBOOST_WISHLIST_FILE', __FILE__ );
 }
 
-if ( ! class_exists( '\WCBoost\Wishlist\Plugin' ) ) {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/plugin.php';
-}
+// Include the necessary files
+require_once plugin_dir_path( __FILE__ ) . 'includes/ajax_handler.php'; // Include Ajax_Handler
+require_once plugin_dir_path( __FILE__ ) . 'includes/plugin.php';
 
 // Declare compatibility with WooCommerce features.
 add_action( 'before_woocommerce_init', function() {
@@ -45,7 +45,7 @@ add_action( 'before_woocommerce_init', function() {
 // Auto-deactivate the free version.
 if ( ! function_exists( 'wcboost_wishlist_installation_check' ) ) {
 	/**
-	 * Check condtions for plugin installation and perform additional actions
+	 * Check conditions for plugin installation and perform additional actions
 	 *
 	 * @since 1.1.0
 	 *
@@ -98,3 +98,10 @@ if ( ! function_exists( 'wcboost_wishlist_activate' ) ) {
 }
 
 register_activation_hook( __FILE__,  'wcboost_wishlist_activate' );
+
+// Ensure the AJAX Handler is initialized when the plugin is loaded
+add_action( 'init', function() {
+	if ( class_exists( 'WCBoost\Wishlist\Ajax_Handler' ) ) {
+		WCBoost\Wishlist\Ajax_Handler::init();
+	}
+} );
